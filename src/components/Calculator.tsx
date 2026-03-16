@@ -1,52 +1,44 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { CATS } from '../data';
 
-type CatWeights = Record<string, number>;
-type CatRets = Record<string, number>;
+/* ─── helpers ─── */
+const fmt = (n: number) =>
+  new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' €';
+const fmtS = (v: number) =>
+  v >= 1e6 ? (v / 1e6).toFixed(2) + 'M€' : (v / 1000).toFixed(0) + 'k€';
+const fmtP = (n: number) => n.toFixed(2) + '%';
 
-function fmtEur(n: number) {
-  return new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' €';
-}
-function fmtShort(v: number) {
-  return v >= 1e6 ? (v / 1e6).toFixed(2) + 'M€' : (v / 1000).toFixed(0) + 'k€';
-}
-function fmtPct(n: number) { return n.toFixed(2) + '%'; }
-
-function calcFV(capital: number, annualRatePct: number, years: number, monthlyDCA: number) {
-  const r = annualRatePct / 100;
+function fv(capital: number, rate: number, years: number, dca: number) {
+  const r = rate / 100;
   const cg = capital * Math.pow(1 + r, years);
-  if (monthlyDCA === 0 || r === 0) return cg + monthlyDCA * 12 * years;
-  const rm = r / 12;
-  const months = years * 12;
-  const dcaFV = monthlyDCA * ((Math.pow(1 + rm, months) - 1) / rm);
-  return cg + dcaFV;
+  if (!dca || !r) return cg + dca * 12 * years;
+  const rm = r / 12, m = years * 12;
+  return cg + dca * ((Math.pow(1 + rm, m) - 1) / rm);
 }
 
-function getProfile(ret: number) {
-  if (ret < 3) return { name: 'Perfil Conservador', color: '#0D7A5F', bg: '#F0FDF4', border: '#A7F3D0', desc: 'Tu cartera está orientada a preservar el capital con mínima volatilidad. Ideal para inversores con aversión al riesgo o horizonte corto (<3 años).', badges: ['Baja volatilidad', 'Capital seguro', 'Liquidez alta'], badgeColor: '#166534', badgeBg: '#D1FAE5' };
-  if (ret < 4.5) return { name: 'Perfil Moderado-Conservador', color: '#0D7A5F', bg: '#F0FDF4', border: '#6EE7B7', desc: 'Cartera equilibrada con énfasis en renta fija. Acepta pequeñas oscilaciones a cambio de algo más de rentabilidad.', badges: ['Riesgo controlado', 'RF dominante', 'Horizonte 3–5A'], badgeColor: '#166534', badgeBg: '#D1FAE5' };
-  if (ret < 6) return { name: 'Perfil Moderado', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A', desc: 'Cartera equilibrada entre protección y crecimiento. La mezcla de renta fija con algo de bolsa y alternativos es la más habitual para el largo plazo.', badges: ['Equilibrio RF/RV', 'Volatilidad media', 'Largo plazo'], badgeColor: '#92400E', badgeBg: '#FDE68A' };
-  if (ret < 8) return { name: 'Perfil Moderado-Agresivo', color: '#C53030', bg: '#FFF5F5', border: '#FECACA', desc: 'Cartera orientada al crecimiento con peso significativo en renta variable. El horizonte largo (7+ años) es fundamental.', badges: ['RV dominante', 'Alta rentabilidad', 'Horizonte 7–15A'], badgeColor: '#991B1B', badgeBg: '#FECACA' };
-  return { name: 'Perfil Agresivo / Largo Plazo', color: '#C53030', bg: '#FFF5F5', border: '#FCA5A5', desc: 'Cartera con máximo peso en renta variable y alto potencial de crecimiento. Puede experimentar caídas del 30–40% en recesiones.', badges: ['Máximo potencial', 'Alta volatilidad', 'Solo 10+ años'], badgeColor: '#991B1B', badgeBg: '#FECACA' };
+function profile(ret: number) {
+  if (ret < 3)   return { name: 'Perfil Conservador',         color: 'text-teal-700', bg: 'bg-emerald-50', border: 'border-emerald-200', badges: ['Baja volatilidad','Capital seguro','Liquidez alta'],       bCls: 'bg-emerald-100 text-emerald-800' };
+  if (ret < 4.5) return { name: 'Perfil Moderado-Conservador',color: 'text-teal-700', bg: 'bg-emerald-50', border: 'border-green-300',   badges: ['Riesgo controlado','RF dominante','Horizonte 3–5A'],       bCls: 'bg-emerald-100 text-emerald-800' };
+  if (ret < 6)   return { name: 'Perfil Moderado',             color: 'text-amber-700',bg: 'bg-amber-50',  border: 'border-amber-200',   badges: ['Equilibrio RF/RV','Volatilidad media','Largo plazo'],       bCls: 'bg-amber-100 text-amber-800' };
+  if (ret < 8)   return { name: 'Perfil Moderado-Agresivo',    color: 'text-red-700',  bg: 'bg-red-50',    border: 'border-red-200',     badges: ['RV dominante','Alta rentabilidad','Horizonte 7–15A'],       bCls: 'bg-red-100 text-red-800' };
+  return           { name: 'Perfil Agresivo / Largo Plazo',    color: 'text-red-700',  bg: 'bg-red-50',    border: 'border-red-300',     badges: ['Máximo potencial','Alta volatilidad','Solo 10+ años'],       bCls: 'bg-red-100 text-red-800' };
 }
 
-function DonutChart({ weights, totalRet }: { weights: CatWeights; totalRet: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+/* ─── Donut ─── */
+function DonutChart({ weights, rets, totalRet }: { weights: number[]; rets: number[]; totalRet: number }) {
+  const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d')!;
-    const W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2, R = 96, r = 54;
+    const c = ref.current; if (!c) return;
+    const ctx = c.getContext('2d')!;
+    const W = c.width, H = c.height, cx = W/2, cy = H/2, R = 94, r = 54;
     ctx.clearRect(0, 0, W, H);
-    const vals = CATS.map(c => Math.max(0, weights[c.id] ?? c.peso));
-    const tot = vals.reduce((a, b) => a + b, 0) || 1;
+    const tot = weights.reduce((a, b) => a + b, 0) || 1;
     let ang = -Math.PI / 2;
-    CATS.forEach((c, i) => {
-      const sl = (vals[i] / tot) * Math.PI * 2;
+    CATS.forEach((cat, i) => {
+      const sl = (weights[i] / tot) * Math.PI * 2;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, ang, ang + sl); ctx.closePath();
-      ctx.fillStyle = c.color; ctx.fill();
-      ang += sl;
+      ctx.fillStyle = cat.color; ctx.fill(); ang += sl;
     });
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
     ctx.fillStyle = '#1B2B5B'; ctx.font = "bold 13px 'DM Sans',sans-serif";
@@ -54,19 +46,19 @@ function DonutChart({ weights, totalRet }: { weights: CatWeights; totalRet: numb
     ctx.fillText(totalRet.toFixed(2) + '%', cx, cy - 7);
     ctx.font = "10px 'DM Sans',sans-serif"; ctx.fillStyle = '#94A3B8';
     ctx.fillText('retorno esp.', cx, cy + 9);
-  }, [weights, totalRet]);
+  }, [weights, rets, totalRet]);
 
   return (
     <div>
-      <canvas ref={canvasRef} width={236} height={236} style={{ display: 'block', margin: '0 auto' }} />
-      <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '7px' }}>
+      <canvas ref={ref} width={236} height={236} className="block mx-auto" />
+      <div className="mt-3 flex flex-col gap-1.5">
         {CATS.map((c, i) => (
-          <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '11px', height: '11px', borderRadius: '50%', background: c.color }} />
-              <span style={{ fontSize: '15px', color: '#374151' }}>{c.label}</span>
+          <div key={c.id} className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded-full" style={{ background: c.color }} />
+              <span className="text-sm text-slate-700">{c.label}</span>
             </div>
-            <span style={{ fontSize: '15px', fontWeight: 600, color: c.color }}>{(weights[c.id] ?? c.peso).toFixed(0)}%</span>
+            <span className="text-sm font-semibold" style={{ color: c.color }}>{weights[i].toFixed(0)}%</span>
           </div>
         ))}
       </div>
@@ -74,322 +66,301 @@ function DonutChart({ weights, totalRet }: { weights: CatWeights; totalRet: numb
   );
 }
 
+/* ─── Growth chart ─── */
 function GrowthChart({ capital, totalRet, years, dca }: { capital: number; totalRet: number; years: number; dca: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLCanvasElement>(null);
+  const wrap = useRef<HTMLDivElement>(null);
+  const dcaOn = dca > 0;
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
+    const canvas = ref.current, container = wrap.current;
     if (!canvas || !container) return;
     const dpr = window.devicePixelRatio || 1;
-    const dW = container.clientWidth - 8;
-    const dH = 220;
+    const dW = container.clientWidth - 8, dH = 220;
     canvas.style.width = dW + 'px'; canvas.style.height = dH + 'px';
     canvas.width = dW * dpr; canvas.height = dH * dpr;
-    const ctx = canvas.getContext('2d')!;
-    ctx.scale(dpr, dpr);
-    const W = dW, H = dH;
-    const dcaOn = dca > 0;
+    const ctx = canvas.getContext('2d')!; ctx.scale(dpr, dpr);
     const pts = Array.from({ length: years + 1 }, (_, i) => ({
-      i, main: calcFV(capital, totalRet, i, 0),
-      withDca: calcFV(capital, totalRet, i, dca),
-      conserv: calcFV(capital, 3, i, 0),
-      conservDca: calcFV(capital, 3, i, dca),
+      main: fv(capital, totalRet, i, 0),
+      withDca: fv(capital, totalRet, i, dca),
+      conserv: fv(capital, 3, i, dcaOn ? dca : 0),
     }));
-    const endMain = pts[years].main;
-    const endDca = pts[years].withDca;
-    const topLine = dcaOn ? endDca : endMain;
-    const maxVal = Math.max(topLine, dcaOn ? pts[years].conservDca : pts[years].conserv) * 1.05;
+    const maxVal = Math.max(...pts.map(p => dcaOn ? p.withDca : p.main)) * 1.05;
     const minVal = capital * 0.85;
     const pad = { top: 14, right: 20, bottom: 30, left: 72 };
-    const cw = W - pad.left - pad.right, ch = H - pad.top - pad.bottom;
+    const cw = dW - pad.left - pad.right, ch = dH - pad.top - pad.bottom;
     const xP = (i: number) => pad.left + (i / years) * cw;
     const yP = (v: number) => pad.top + ch - Math.max(0, Math.min(1, (v - minVal) / (maxVal - minVal))) * ch;
-    ctx.clearRect(0, 0, W, H);
-    // Grid lines
+    ctx.clearRect(0, 0, dW, dH);
     ctx.strokeStyle = '#F1F5F9'; ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) { const y = pad.top + (i / 4) * ch; ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke(); }
-    // X labels
+    for (let i = 0; i <= 4; i++) { const y = pad.top + (i/4)*ch; ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left+cw, y); ctx.stroke(); }
     const step = years <= 10 ? 1 : years <= 20 ? 5 : 10;
     ctx.fillStyle = '#CBD5E1'; ctx.font = "10px 'DM Sans',sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-    for (let i = 0; i <= years; i += step) { ctx.fillText('A' + i, xP(i), pad.top + ch + 5); }
-    // Conservative line
-    const cPts = dcaOn ? pts.map(p => p.conservDca) : pts.map(p => p.conserv);
-    ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-    ctx.beginPath(); cPts.forEach((v, i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
-    ctx.stroke(); ctx.setLineDash([]);
-    // Main line fill
-    const mPts = pts.map(p => p.main);
+    for (let i = 0; i <= years; i += step) ctx.fillText('A'+i, xP(i), pad.top+ch+5);
+    // Conservative
+    ctx.strokeStyle = '#CBD5E1'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); pts.forEach((p, i) => i===0 ? ctx.moveTo(xP(i),yP(p.conserv)) : ctx.lineTo(xP(i),yP(p.conserv))); ctx.stroke(); ctx.setLineDash([]);
+    // Main
     ctx.fillStyle = 'rgba(124,58,237,0.07)';
-    ctx.beginPath(); mPts.forEach((v, i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
-    ctx.lineTo(xP(years), pad.top + ch); ctx.lineTo(xP(0), pad.top + ch); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = '#7C3AED'; ctx.lineWidth = dcaOn ? 1.5 : 2.5; ctx.setLineDash(dcaOn ? [5, 3] : []);
-    ctx.beginPath(); mPts.forEach((v, i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
-    ctx.stroke(); ctx.setLineDash([]);
-    // DCA line
+    ctx.beginPath(); pts.forEach((p, i) => i===0 ? ctx.moveTo(xP(i),yP(p.main)) : ctx.lineTo(xP(i),yP(p.main)));
+    ctx.lineTo(xP(years), pad.top+ch); ctx.lineTo(xP(0), pad.top+ch); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#7C3AED'; ctx.lineWidth = dcaOn ? 1.5 : 2.5; ctx.setLineDash(dcaOn ? [5,3] : []);
+    ctx.beginPath(); pts.forEach((p, i) => i===0 ? ctx.moveTo(xP(i),yP(p.main)) : ctx.lineTo(xP(i),yP(p.main))); ctx.stroke(); ctx.setLineDash([]);
+    // DCA
     if (dcaOn) {
-      const dPts = pts.map(p => p.withDca);
       ctx.fillStyle = 'rgba(5,150,105,0.08)';
-      ctx.beginPath(); dPts.forEach((v, i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
-      ctx.lineTo(xP(years), pad.top + ch); ctx.lineTo(xP(0), pad.top + ch); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); pts.forEach((p, i) => i===0 ? ctx.moveTo(xP(i),yP(p.withDca)) : ctx.lineTo(xP(i),yP(p.withDca)));
+      ctx.lineTo(xP(years), pad.top+ch); ctx.lineTo(xP(0), pad.top+ch); ctx.closePath(); ctx.fill();
       ctx.strokeStyle = '#059669'; ctx.lineWidth = 2.5;
-      ctx.beginPath(); dPts.forEach((v, i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
-      ctx.stroke();
+      ctx.beginPath(); pts.forEach((p, i) => i===0 ? ctx.moveTo(xP(i),yP(p.withDca)) : ctx.lineTo(xP(i),yP(p.withDca))); ctx.stroke();
     }
-    // Y axis labels
     ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
     for (let i = 0; i <= 4; i++) {
-      const v = minVal + (i / 4) * (maxVal - minVal);
+      const v = minVal + (i/4)*(maxVal - minVal);
       ctx.fillStyle = '#94A3B8'; ctx.font = "10px 'DM Sans',sans-serif";
-      ctx.fillText((v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v / 1000).toFixed(0) + 'k') + '€', pad.left - 5, pad.top + ch - (i / 4) * ch);
+      ctx.fillText((v >= 1e6 ? (v/1e6).toFixed(1)+'M' : (v/1000).toFixed(0)+'k')+'€', pad.left-5, pad.top+ch-(i/4)*ch);
     }
   }, [capital, totalRet, years, dca]);
 
-  const eMain = calcFV(capital, totalRet, years, 0);
-  const eDca = calcFV(capital, totalRet, years, dca);
-  const eC = calcFV(capital, 3, years, dca);
-  const dcaOn = dca > 0;
+  const eMain = fv(capital, totalRet, years, 0);
+  const eDca  = fv(capital, totalRet, years, dca);
+  const eC    = fv(capital, 3, years, dcaOn ? dca : 0);
 
   return (
-    <div ref={containerRef} style={{ width: '100%' }}>
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%' }} />
-      <div style={{ display: 'flex', gap: '14px', marginTop: '14px', flexWrap: 'wrap' }}>
+    <div ref={wrap} className="w-full">
+      <canvas ref={ref} className="block w-full" />
+      <div className="flex gap-4 mt-3 flex-wrap text-sm">
         {dcaOn ? (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '15px', color: '#374151' }}>
-              <div style={{ width: '22px', height: '4px', background: '#059669', borderRadius: '2px' }} />
-              Con DCA {dca}€/mes → <strong style={{ color: '#059669' }}>{fmtShort(eDca)}</strong> en {years}A
+            <div className="flex items-center gap-2 text-slate-700">
+              <div className="w-5 h-1 bg-emerald-600 rounded" />
+              Con DCA {dca}€/mes → <strong className="text-emerald-600">{fmtS(eDca)}</strong> en {years}A
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '15px', color: '#94A3B8' }}>
-              <div style={{ width: '22px', height: '3px', background: '#7C3AED', borderRadius: '2px', borderTop: '1.5px dashed #7C3AED' }} />
-              Solo capital → <strong style={{ color: '#7C3AED' }}>{fmtShort(eMain)}</strong>
+            <div className="flex items-center gap-2 text-slate-400">
+              <div className="w-5 h-0.5 bg-violet-600 rounded border-t border-dashed border-violet-600" />
+              Solo capital → <strong className="text-violet-600">{fmtS(eMain)}</strong>
             </div>
           </>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '15px', color: '#374151' }}>
-            <div style={{ width: '22px', height: '4px', background: '#7C3AED', borderRadius: '2px' }} />
-            Tu cartera ({totalRet.toFixed(2)}%/año) → <strong style={{ color: '#7C3AED' }}>{fmtShort(eMain)}</strong> en {years}A
+          <div className="flex items-center gap-2 text-slate-700">
+            <div className="w-5 h-1 bg-violet-600 rounded" />
+            Tu cartera ({totalRet.toFixed(2)}%/año) → <strong className="text-violet-600">{fmtS(eMain)}</strong> en {years}A
           </div>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '15px', color: '#94A3B8' }}>
-          <div style={{ width: '22px', height: '2px', background: '#CBD5E1', borderTop: '1.5px dashed #CBD5E1' }} />
-          Ahorro 3%/A → <strong style={{ color: '#94A3B8' }}>{fmtShort(eC)}</strong>
+        <div className="flex items-center gap-2 text-slate-400">
+          <div className="w-5 h-0.5 bg-slate-300 rounded" />
+          Ahorro 3%/A → <strong>{fmtS(eC)}</strong>
         </div>
       </div>
     </div>
   );
 }
 
+/* ─── Main component ─── */
 export default function Calculator() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   const [capital, setCapital] = useState(204000);
-  const [years, setYears] = useState(20);
-  const [dcaEnabled, setDcaEnabled] = useState(false);
-  const [dcaAmount, setDcaAmount] = useState(500);
-  const [weights, setWeights] = useState<CatWeights>(Object.fromEntries(CATS.map(c => [c.id, c.peso])));
-  const [rets, setRets] = useState<CatRets>(Object.fromEntries(CATS.map(c => [c.id, c.ret])));
+  const [years,   setYears]   = useState(20);
+  const [dcaOn,   setDcaOn]   = useState(false);
+  const [dcaAmt,  setDcaAmt]  = useState(500);
+  const [weights, setWeights] = useState(() => CATS.map(c => c.peso));
+  const [rets,    setRets]    = useState(() => CATS.map(c => c.ret));
 
-  const totalPeso = Object.values(weights).reduce((a, b) => a + b, 0);
-  const totalRet = CATS.reduce((s, c) => s + ((weights[c.id] ?? c.peso) / 100) * (rets[c.id] ?? c.ret), 0);
-  const dca = dcaEnabled ? dcaAmount : 0;
-  const profile = getProfile(totalRet);
-  const endMain = calcFV(capital, totalRet, years, 0);
-  const endDca = dcaEnabled ? calcFV(capital, totalRet, years, dca) : null;
-  const totalRentabEur = CATS.reduce((s, c) => s + capital * ((weights[c.id] ?? c.peso) / 100) * ((rets[c.id] ?? c.ret) / 100), 0);
+  const totalW   = weights.reduce((a, b) => a + b, 0);
+  const totalRet = CATS.reduce((s, c, i) => s + (weights[i]/100) * rets[i], 0);
+  const dca      = dcaOn ? dcaAmt : 0;
+  const p        = profile(totalRet);
+  const totalRentab = CATS.reduce((s, c, i) => s + capital * (weights[i]/100) * (rets[i]/100), 0);
+  const endMain  = fv(capital, totalRet, years, 0);
+  const endDca   = fv(capital, totalRet, years, dca);
+
+  const setW = (i: number, v: number) => setWeights(prev => { const n = [...prev]; n[i] = v; return n; });
+  const setR = (i: number, v: number) => setRets(prev => { const n = [...prev]; n[i] = v; return n; });
+
+  const summaryCards = [
+    { label: 'Capital inicial',   val: fmt(capital),      cls: 'text-navy',          bg: 'bg-blue-50',    border: 'border-blue-200' },
+    { label: 'Retorno esperado',  val: fmtP(totalRet),    cls: 'text-emerald-600',   bg: 'bg-emerald-50', border: 'border-emerald-200' },
+    { label: 'Rentab. anual €',   val: fmt(totalRentab),  cls: 'text-violet-700',    bg: 'bg-violet-50',  border: 'border-violet-200' },
+    { label: `En ${years} años`,  val: fmtS(endMain),     cls: 'text-violet-700',    bg: 'bg-violet-50',  border: 'border-violet-200' },
+    ...(dcaOn ? [{ label: `Con DCA ${dcaAmt}€/mes`, val: fmtS(endDca), cls: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200' }] : []),
+    { label: 'Pesos totales', val: fmtP(totalW), cls: Math.abs(totalW-100)<0.1 ? 'text-amber-700' : 'text-red-700', bg: Math.abs(totalW-100)<0.1 ? 'bg-amber-50' : 'bg-red-50', border: Math.abs(totalW-100)<0.1 ? 'border-amber-200' : 'border-red-200' },
+  ];
 
   return (
-    <section id="calculadora" style={{ background: '#F8FAFC', padding: '88px 56px', borderTop: '1px solid #E2E8F0' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }} ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-        >
-          <div style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '.09em', textTransform: 'uppercase', color: 'var(--blue)', marginBottom: '10px' }}>
-            PASO 2 — CALCULA TU CARTERA
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(28px, 3vw, 44px)', color: 'var(--navy)', marginBottom: '8px' }}>
-            Diseña tu <em style={{ color: 'var(--blue)', fontStyle: 'italic' }}>cartera ideal</em>
+    <section id="calculadora" className="bg-slate-50 px-14 py-20 border-t border-slate-200">
+      <div className="max-w-6xl mx-auto" ref={ref}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}>
+          <p className="text-xs font-bold tracking-[0.09em] uppercase text-blue-600 mb-2.5">PASO 2 — CALCULA TU CARTERA</p>
+          <h2 className="font-serif text-[clamp(28px,3vw,44px)] text-navy leading-tight mb-2.5">
+            Diseña tu <em className="not-italic text-blue-600">cartera ideal</em>
           </h2>
-          <p style={{ fontSize: '18px', color: 'var(--g3)', marginBottom: '40px', maxWidth: '820px', lineHeight: 1.75 }}>
+          <p className="text-lg text-slate-500 mb-10 max-w-3xl leading-relaxed">
             Introduce tu capital, ajusta los pesos de cada categoría y activa el DCA si quieres aportar mensualmente.
           </p>
         </motion.div>
 
-        {/* Inputs row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px', marginBottom: '28px' }}>
+        {/* Inputs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {/* Capital */}
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1.5px solid #E2E8F0', padding: '22px 24px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '12px' }}>Capital inicial</div>
-            <div style={{ display: 'flex', alignItems: 'center', border: '2px solid #CBD5E1', borderRadius: '10px', overflow: 'hidden', background: '#F8FAFC' }}>
-              <span style={{ padding: '12px 14px', fontSize: '17px', fontWeight: 500, color: '#94A3B8', borderRight: '1px solid #E2E8F0', background: '#F1F5F9' }}>€</span>
-              <input type="number" value={capital} min={0} step={1000} onChange={e => setCapital(Math.max(1, +e.target.value))}
-                style={{ border: 'none', outline: 'none', padding: '12px 14px', fontSize: '20px', fontWeight: 700, color: 'var(--navy)', flex: 1, background: 'transparent', fontFamily: 'var(--font-sans)' }} />
+          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+            <div className="text-xs font-bold text-slate-400 tracking-widest uppercase mb-3">Capital inicial</div>
+            <div className="flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+              <span className="px-4 py-3 text-base font-medium text-slate-400 border-r border-slate-200 bg-slate-100">€</span>
+              <input type="number" value={capital} min={0} step={1000}
+                onChange={e => setCapital(Math.max(1, +e.target.value))}
+                className="flex-1 bg-transparent px-4 py-3 text-xl font-bold text-navy outline-none font-sans"
+              />
             </div>
-            <div style={{ fontSize: '13px', color: '#94A3B8', marginTop: '7px' }}>Capital invertido desde el primer día</div>
+            <p className="text-xs text-slate-400 mt-2">Capital invertido desde el primer día</p>
           </div>
 
           {/* DCA */}
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1.5px solid #7C3AED30', padding: '22px 24px', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: 0, left: '20px', right: '20px', height: '3px', background: 'var(--purple)', borderRadius: '0 0 3px 3px' }} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--purple)', textTransform: 'uppercase', letterSpacing: '.07em' }}>Aportación DCA</div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-                <input type="checkbox" checked={dcaEnabled} onChange={e => setDcaEnabled(e.target.checked)} style={{ accentColor: 'var(--purple)', width: '14px', height: '14px' }} />
-                <span style={{ fontSize: '14px', color: '#64748B' }}>Activar</span>
+          <div className="relative bg-white rounded-2xl border border-violet-200 p-5">
+            <div className="absolute top-0 left-5 right-5 h-0.5 bg-violet-500 rounded-b-sm" />
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs font-bold text-violet-600 tracking-widest uppercase">Aportación DCA</div>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" checked={dcaOn} onChange={e => setDcaOn(e.target.checked)}
+                  className="accent-violet-600 w-3.5 h-3.5" />
+                <span className="text-sm text-slate-400">Activar</span>
               </label>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', border: '2px solid #CBD5E1', borderRadius: '10px', overflow: 'hidden', background: '#F8FAFC' }}>
-              <span style={{ padding: '12px 14px', fontSize: '17px', fontWeight: 500, color: '#94A3B8', borderRight: '1px solid #E2E8F0', background: '#F1F5F9' }}>€</span>
-              <input type="number" value={dcaAmount} min={0} step={50} onChange={e => setDcaAmount(+e.target.value)}
-                style={{ border: 'none', outline: 'none', padding: '12px 14px', fontSize: '20px', fontWeight: 700, color: 'var(--purple)', flex: 1, background: 'transparent', fontFamily: 'var(--font-sans)' }} />
-              <span style={{ padding: '12px 14px', fontSize: '13px', fontWeight: 500, color: '#94A3B8', borderLeft: '1px solid #E2E8F0', background: '#F1F5F9' }}>/ mes</span>
+            <div className="flex items-center border-2 border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+              <span className="px-4 py-3 text-base font-medium text-slate-400 border-r border-slate-200 bg-slate-100">€</span>
+              <input type="number" value={dcaAmt} min={0} step={50}
+                onChange={e => setDcaAmt(+e.target.value)}
+                className="flex-1 bg-transparent px-4 py-3 text-xl font-bold text-violet-600 outline-none font-sans"
+              />
+              <span className="px-4 py-3 text-xs font-medium text-slate-400 border-l border-slate-200 bg-slate-100 whitespace-nowrap">/ mes</span>
             </div>
           </div>
 
           {/* Years */}
-          <div style={{ background: '#fff', borderRadius: '16px', border: '1.5px solid #E2E8F0', padding: '22px 24px' }}>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '12px' }}>Horizonte temporal</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '6px' }}>
-              <input type="range" min={1} max={40} step={1} value={years} onChange={e => setYears(+e.target.value)}
-                style={{ flex: 1, accentColor: 'var(--navy)', height: '10px' }} />
-              <span style={{ fontSize: '22px', fontWeight: 700, color: 'var(--navy)', minWidth: '90px', textAlign: 'right' }}>{years} años</span>
+          <div className="bg-white rounded-2xl border border-slate-200 p-5">
+            <div className="text-xs font-bold text-slate-400 tracking-widest uppercase mb-3">Horizonte temporal</div>
+            <div className="flex items-center gap-4 mb-1.5">
+              <input type="range" min={1} max={40} step={1} value={years}
+                onChange={e => setYears(+e.target.value)}
+                className="flex-1 accent-navy h-2.5"
+              />
+              <span className="text-2xl font-bold text-navy font-sans min-w-[88px] text-right">{years} años</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '13px', color: '#CBD5E1' }}>1 año</span>
-              <span style={{ fontSize: '13px', color: '#CBD5E1' }}>40 años</span>
+            <div className="flex justify-between text-xs text-slate-300">
+              <span>1 año</span><span>40 años</span>
             </div>
           </div>
         </div>
 
-        {/* Profile box */}
+        {/* Profile */}
         <motion.div
-          animate={{ background: profile.bg, borderColor: profile.border }}
-          transition={{ duration: 0.4 }}
-          style={{ borderRadius: '18px', padding: '28px 32px', border: '2px solid', marginBottom: '28px' }}
+          className={`rounded-2xl border-2 p-7 mb-6 transition-all duration-400 ${p.bg} ${p.border}`}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '8px' }}>Tu perfil de inversor</div>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '34px', color: profile.color, marginBottom: '6px' }}>{profile.name}</div>
-              <div style={{ fontSize: '17px', lineHeight: 1.7, color: '#374151', maxWidth: '700px' }}>{profile.desc}</div>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '14px' }}>
-                {profile.badges.map(b => (
-                  <span key={b} style={{ fontSize: '13px', fontWeight: 600, padding: '5px 15px', borderRadius: '24px', background: profile.badgeBg, color: profile.badgeColor }}>{b}</span>
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-bold text-slate-400 tracking-widest uppercase mb-2">Tu perfil de inversor</div>
+              <div className={`font-serif text-4xl mb-2 ${p.color}`}>{p.name}</div>
+              <div className="flex gap-2 flex-wrap mt-3">
+                {p.badges.map(b => (
+                  <span key={b} className={`text-xs font-semibold px-3.5 py-1.5 rounded-full ${p.bCls}`}>{b}</span>
                 ))}
               </div>
             </div>
-            <div style={{ textAlign: 'right', minWidth: '110px' }}>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '58px', color: profile.color, lineHeight: 1 }}>{fmtPct(totalRet)}</div>
-              <div style={{ fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.07em', color: profile.color, marginTop: '2px' }}>retorno esp.</div>
+            <div className="text-right">
+              <div className={`font-serif text-[58px] leading-none ${p.color}`}>{fmtP(totalRet)}</div>
+              <div className={`text-xs font-semibold uppercase tracking-widest mt-1 ${p.color}`}>retorno esp.</div>
             </div>
           </div>
         </motion.div>
 
-        {/* Summary strip */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '12px', marginBottom: '26px' }}>
-          {[
-            { label: 'Capital inicial', val: fmtEur(capital), color: '#1B2B5B', bg: '#EFF6FF', border: '#BFDBFE' },
-            { label: 'Retorno esperado', val: fmtPct(totalRet), color: '#059669', bg: '#F0FDF4', border: '#A7F3D0' },
-            { label: 'Rentab. anual €', val: fmtEur(totalRentabEur), color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
-            { label: `En ${years} años`, val: fmtShort(endMain), color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
-            ...(endDca ? [{ label: `Con DCA ${dcaAmount}€/mes`, val: fmtShort(endDca), color: '#059669', bg: '#F0FDF4', border: '#A7F3D0' }] : []),
-            { label: 'Pesos totales', val: fmtPct(totalPeso), color: Math.abs(totalPeso - 100) < 0.1 ? '#B45309' : '#C53030', bg: Math.abs(totalPeso - 100) < 0.1 ? '#FFFBEB' : '#FFF5F5', border: Math.abs(totalPeso - 100) < 0.1 ? '#FDE68A' : '#FECACA' },
-          ].map(s => (
-            <div key={s.label} style={{ borderRadius: '13px', padding: '16px 20px', border: `1.5px solid ${s.border}`, background: s.bg }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '4px' }}>{s.label}</div>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', color: s.color }}>{s.val}</div>
+        {/* Summary cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+          {summaryCards.map(s => (
+            <div key={s.label} className={`rounded-xl border px-5 py-4 ${s.bg} ${s.border}`}>
+              <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1">{s.label}</div>
+              <div className={`font-serif text-xl ${s.cls}`}>{s.val}</div>
             </div>
           ))}
         </div>
 
         {/* Table */}
-        <div style={{ background: '#fff', borderRadius: '20px', border: '1.5px solid #E2E8F0', overflow: 'hidden', marginBottom: '24px' }}>
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden mb-6">
           {/* Header */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.4fr 1fr 1.3fr 1.2fr', padding: '14px 24px', background: '#F1F5F9', borderBottom: '1px solid #E2E8F0', gap: '8px' }}>
-            {['Categoría', 'Retorno esp.', 'Peso %', 'Contribución', 'Capital', 'Rentab. €'].map((h, i) => (
-              <div key={h} style={{ fontSize: '12px', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.07em', textAlign: i > 1 ? 'right' : 'left' }}>{h}</div>
+          <div className="hidden md:grid grid-cols-[1.8fr_1fr_1.4fr_1fr_1.3fr_1.2fr] px-6 py-3.5 bg-slate-50 border-b border-slate-200 gap-2">
+            {['Categoría','Retorno esp.','Peso %','Contribución','Capital','Rentab. €'].map((h, i) => (
+              <div key={h} className={`text-[11px] font-bold text-slate-500 uppercase tracking-widest ${i > 1 ? 'text-right' : ''}`}>{h}</div>
             ))}
           </div>
           {CATS.map((c, i) => {
-            const peso = weights[c.id] ?? c.peso;
-            const ret = rets[c.id] ?? c.ret;
-            const capitalCat = capital * (peso / 100);
-            const rentabEur = capitalCat * (ret / 100);
-            const contrib = (peso / 100) * ret;
+            const capitalCat = capital * (weights[i]/100);
+            const rentabEur  = capitalCat * (rets[i]/100);
+            const contrib    = (weights[i]/100) * rets[i];
             return (
-              <div key={c.id} style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.4fr 1fr 1.3fr 1.2fr', padding: '16px 24px', gap: '8px', borderBottom: '1px solid #F1F5F9', background: i % 2 === 1 ? '#FAFBFC' : '#fff', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: c.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#1B2B5B' }}>{c.label}</span>
+              <div key={c.id} className={`grid grid-cols-1 md:grid-cols-[1.8fr_1fr_1.4fr_1fr_1.3fr_1.2fr] px-6 py-4 gap-2 border-b border-slate-50 items-center ${i%2===1 ? 'bg-slate-50/60' : 'bg-white'}`}>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: c.color }} />
+                  <span className="text-base font-semibold text-navy">{c.label}</span>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <input type="number" value={ret} min={0} max={30} step={0.1}
-                    onChange={e => setRets(prev => ({ ...prev, [c.id]: parseFloat(e.target.value) || 0 }))}
-                    style={{ width: '72px', textAlign: 'right', border: '1.5px solid #E2E8F0', borderRadius: '8px', padding: '6px 8px', fontSize: '15px', fontWeight: 600, color: c.color, background: '#fff', fontFamily: 'var(--font-sans)', outline: 'none' }} />
-                  <span style={{ fontSize: '13px', color: '#94A3B8' }}> %</span>
+                <div className="flex items-center justify-end gap-1">
+                  <input type="number" value={rets[i]} min={0} max={30} step={0.1}
+                    onChange={e => setR(i, parseFloat(e.target.value)||0)}
+                    className="w-16 text-right border border-slate-200 rounded-lg px-2 py-1.5 text-sm font-bold outline-none font-sans"
+                    style={{ color: c.color }}
+                  />
+                  <span className="text-xs text-slate-400">%</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                  <input type="range" min={0} max={100} step={1} value={peso}
-                    onChange={e => setWeights(prev => ({ ...prev, [c.id]: +e.target.value }))}
-                    style={{ width: '70px', accentColor: c.color, height: '8px' }} />
-                  <input type="number" value={peso} min={0} max={100} step={1}
-                    onChange={e => setWeights(prev => ({ ...prev, [c.id]: +e.target.value }))}
-                    style={{ width: '50px', textAlign: 'center', border: '1.5px solid #E2E8F0', borderRadius: '8px', padding: '6px', fontSize: '15px', fontWeight: 600, color: '#1B2B5B', background: '#fff', fontFamily: 'var(--font-sans)', outline: 'none' }} />
-                  <span style={{ fontSize: '13px', color: '#94A3B8' }}>%</span>
+                <div className="flex items-center gap-2 justify-end">
+                  <input type="range" min={0} max={100} step={1} value={weights[i]}
+                    onChange={e => setW(i, +e.target.value)}
+                    className="w-16 h-2" style={{ accentColor: c.color }}
+                  />
+                  <input type="number" value={weights[i]} min={0} max={100} step={1}
+                    onChange={e => setW(i, +e.target.value)}
+                    className="w-12 text-center border border-slate-200 rounded-lg px-2 py-1.5 text-sm font-bold text-navy outline-none font-sans"
+                  />
+                  <span className="text-xs text-slate-400">%</span>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '15px', fontWeight: 600, color: '#059669' }}>{fmtPct(contrib)}</div>
-                <div style={{ textAlign: 'right', fontSize: '15px', fontWeight: 500, color: '#374151' }}>{fmtEur(capitalCat)}</div>
-                <div style={{ textAlign: 'right', fontSize: '16px', fontWeight: 700, color: c.color }}>{fmtEur(rentabEur)}</div>
+                <div className="text-right text-sm font-semibold text-emerald-600">{fmtP(contrib)}</div>
+                <div className="text-right text-sm font-medium text-slate-600">{fmt(capitalCat)}</div>
+                <div className="text-right text-base font-bold" style={{ color: c.color }}>{fmt(rentabEur)}</div>
               </div>
             );
           })}
-          {/* Footer total */}
-          {Math.abs(totalPeso - 100) > 0.1 && (
-            <div style={{ padding: '10px 24px', background: '#FEF2F2', color: '#991B1B', fontSize: '15px', fontWeight: 600, borderTop: '1px solid #FEE2E2' }}>
-              ⚠ Los pesos suman {totalPeso.toFixed(1)}% — deben sumar 100%
+          {Math.abs(totalW - 100) > 0.1 && (
+            <div className="px-6 py-3 bg-red-50 text-red-700 text-sm font-semibold border-t border-red-100">
+              ⚠ Los pesos suman {totalW.toFixed(1)}% — deben sumar 100%
             </div>
           )}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1.4fr 1fr 1.3fr 1.2fr', padding: '18px 24px', gap: '8px', background: '#F8FAFC', borderTop: '2px solid #E2E8F0', alignItems: 'center' }}>
-            <div style={{ fontSize: '16px', fontWeight: 700, color: '#1B2B5B' }}>TOTAL CARTERA</div>
+          <div className="grid grid-cols-1 md:grid-cols-[1.8fr_1fr_1.4fr_1fr_1.3fr_1.2fr] px-6 py-4 gap-2 bg-slate-50 border-t-2 border-slate-200 items-center">
+            <div className="text-base font-bold text-navy">TOTAL CARTERA</div>
             <div />
-            <div style={{ textAlign: 'right', fontSize: '18px', fontWeight: 700, color: '#1B2B5B' }}>{fmtPct(totalPeso)}</div>
-            <div style={{ textAlign: 'right', fontSize: '18px', fontWeight: 700, color: '#059669' }}>{fmtPct(totalRet)}</div>
-            <div style={{ textAlign: 'right', fontSize: '18px', fontWeight: 700, color: '#1B2B5B' }}>{fmtEur(capital)}</div>
-            <div style={{ textAlign: 'right', fontSize: '20px', fontWeight: 700, color: '#7C3AED' }}>{fmtEur(totalRentabEur)}</div>
+            <div className="text-right text-lg font-bold text-navy">{fmtP(totalW)}</div>
+            <div className="text-right text-lg font-bold text-emerald-600">{fmtP(totalRet)}</div>
+            <div className="text-right text-lg font-bold text-navy">{fmt(capital)}</div>
+            <div className="text-right text-xl font-bold text-violet-700">{fmt(totalRentab)}</div>
           </div>
         </div>
 
         {/* Charts */}
-        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '20px', alignItems: 'start' }}>
-          <div style={{ background: '#fff', borderRadius: '18px', border: '1.5px solid #E2E8F0', padding: '24px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '16px' }}>Distribución</div>
-            <DonutChart weights={weights} totalRet={totalRet} />
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+            <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-4">Distribución</div>
+            <DonutChart weights={weights} rets={rets} totalRet={totalRet} />
           </div>
-          <div style={{ background: '#fff', borderRadius: '18px', border: '1.5px solid #E2E8F0', padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '.07em' }}>Proyección de crecimiento</div>
-              {dcaEnabled && <div style={{ fontSize: '13px', fontWeight: 700, background: '#F5F3FF', color: 'var(--purple)', padding: '5px 14px', borderRadius: '24px', border: '1px solid #DDD6FE' }}>DCA ACTIVADO</div>}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Proyección de crecimiento</div>
+              {dcaOn && <span className="text-xs font-bold bg-violet-50 text-violet-700 px-4 py-1.5 rounded-full border border-violet-200">DCA ACTIVADO</span>}
             </div>
             <GrowthChart capital={capital} totalRet={totalRet} years={years} dca={dca} />
           </div>
         </div>
 
-        <div style={{ marginTop: '16px', padding: '14px 18px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '12px', fontSize: '15px', color: '#92400E', lineHeight: 1.7 }}>
+        <div className="mt-4 px-5 py-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 leading-relaxed">
           <strong>Aviso:</strong> Los retornos son estimaciones históricas. Las rentabilidades pasadas no garantizan rentabilidades futuras. Simulador meramente informativo.
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          #calculadora > div > div:last-of-type {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

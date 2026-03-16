@@ -1,52 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --navy: #1B2B5B;
-  --navy2: #0F2044;
-  --navy3: #0B1629;
-  --blue: #2563EB;
-  --blue-l: #DBEAFE;
-  --teal: #0D7A5F;
-  --teal-l: #D1FAE5;
-  --amber: #B45309;
-  --amber-l: #FEF3C7;
-  --red: #C53030;
-  --red-l: #FEE2E2;
-  --purple: #7C3AED;
-  --purple-l: #F5F3FF;
-  --green: #059669;
-  --green-l: #ECFDF5;
-  --slate: #F1F5F9;
-  --slate2: #E2E8F0;
-  --g2: #374151;
-  --g3: #6B7280;
-  --g4: #9CA3AF;
-  --g5: #D1D5DB;
-  --white: #FFFFFF;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-serif: 'DM Serif Display', Georgia, serif;
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #0B1629; }
+  ::-webkit-scrollbar-thumb { background: #2563EB; border-radius: 3px; }
+
+  /* Number input arrows hidden */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer utilities {
+  .font-display { font-family: 'DM Serif Display', Georgia, serif; }
 }
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans);
-  background: var(--slate);
-  color: var(--g2);
-  line-height: 1.65;
-  font-size: 18px;
-  overflow-x: hidden;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--navy3); }
-::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }

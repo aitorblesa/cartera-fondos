@@ -1,16 +1,16 @@
 export const SECTIONS = [
-  { id: 'tipos', label: 'Tipos de fondos' },
+  { id: 'tipos',       label: 'Tipos de fondos' },
   { id: 'calculadora', label: 'Calculadora' },
-  { id: 'fondos', label: 'Los fondos' },
-  { id: 'por-que', label: 'Por qué diversificar' },
+  { id: 'fondos',      label: 'Los fondos' },
+  { id: 'por-que',     label: 'Por qué diversificar' },
 ] as const;
 
 export const CATS = [
-  { id: 'monetario', label: 'Monetarios',     color: '#2563EB', lightColor: '#EFF6FF', ret: 2.10, peso: 15 },
-  { id: 'rfcorto',  label: 'RF Corto plazo',  color: '#0D7A5F', lightColor: '#F0FDF4', ret: 3.70, peso: 15 },
-  { id: 'rfmedio',  label: 'RF Medio plazo',  color: '#059669', lightColor: '#ECFDF5', ret: 5.50, peso: 20 },
-  { id: 'rv',       label: 'Renta Variable',  color: '#C53030', lightColor: '#FFF5F5', ret: 9.00, peso: 40 },
-  { id: 'alt',      label: 'Alternativos',    color: '#7C3AED', lightColor: '#F5F3FF', ret: 5.00, peso: 10 },
+  { id: 'monetario', label: 'Monetarios',    color: '#2563EB', ret: 2.10, peso: 15 },
+  { id: 'rfcorto',   label: 'RF Corto plazo',color: '#0D7A5F', ret: 3.70, peso: 15 },
+  { id: 'rfmedio',   label: 'RF Medio plazo',color: '#059669', ret: 5.50, peso: 20 },
+  { id: 'rv',        label: 'Renta Variable',color: '#C53030', ret: 9.00, peso: 40 },
+  { id: 'alt',       label: 'Alternativos',  color: '#7C3AED', ret: 5.00, peso: 10 },
 ] as const;
 
 export type FundType = 'monetario' | 'rf' | 'mixto' | 'rv';
@@ -26,23 +26,62 @@ export interface Fund {
   pros: string[];
 }
 
-export const TC: Record<FundType, string> = {
-  monetario: '#2563EB', rf: '#0D7A5F', mixto: '#B45309', rv: '#C53030',
+// Tailwind-safe color mappings per fund type
+export const TYPE_STYLES: Record<FundType, {
+  stripe: string;
+  badgeBg: string;
+  badgeText: string;
+  badgeLabel: string;
+  riskDot: string;
+  rentText: string;
+  hex: string;
+}> = {
+  monetario: {
+    stripe:     'bg-blue-600',
+    badgeBg:    'bg-blue-50',
+    badgeText:  'text-blue-700',
+    badgeLabel: 'MONETARIO',
+    riskDot:    'bg-blue-600',
+    rentText:   'text-blue-600',
+    hex:        '#2563EB',
+  },
+  rf: {
+    stripe:     'bg-teal-700',
+    badgeBg:    'bg-emerald-50',
+    badgeText:  'text-emerald-800',
+    badgeLabel: 'RENTA FIJA',
+    riskDot:    'bg-teal-700',
+    rentText:   'text-teal-700',
+    hex:        '#0D7A5F',
+  },
+  mixto: {
+    stripe:     'bg-amber-700',
+    badgeBg:    'bg-amber-50',
+    badgeText:  'text-amber-800',
+    badgeLabel: 'MIXTO / ALT.',
+    riskDot:    'bg-amber-700',
+    rentText:   'text-amber-700',
+    hex:        '#B45309',
+  },
+  rv: {
+    stripe:     'bg-red-700',
+    badgeBg:    'bg-red-50',
+    badgeText:  'text-red-800',
+    badgeLabel: 'RV / BOLSA',
+    riskDot:    'bg-red-700',
+    rentText:   'text-red-700',
+    hex:        '#C53030',
+  },
 };
-export const TLB: Record<FundType, string> = {
-  monetario: '#EFF6FF', rf: '#F0FDF4', mixto: '#FFFBEB', rv: '#FFF5F5',
+
+export const RISK_LABEL: Record<number, string> = {
+  1: 'Muy bajo', 2: 'Bajo', 3: 'Moderado',
+  4: 'Mod-alto', 5: 'Alto', 6: 'Alto', 7: 'Muy alto',
 };
-export const TLT: Record<FundType, string> = {
-  monetario: '#1D4ED8', rf: '#166534', mixto: '#92400E', rv: '#991B1B',
-};
-export const TL: Record<FundType, string> = {
-  monetario: 'MONETARIO', rf: 'RENTA FIJA', mixto: 'MIXTO / ALT.', rv: 'RV / BOLSA',
-};
-export const RC: Record<number, string> = {
-  1: '#0D7A5F', 2: '#0D7A5F', 3: '#B45309', 4: '#B45309', 5: '#C53030', 6: '#C53030', 7: '#C53030',
-};
-export const RL: Record<number, string> = {
-  1: 'Muy bajo', 2: 'Bajo', 3: 'Moderado', 4: 'Mod-alto', 5: 'Alto', 6: 'Alto', 7: 'Muy alto',
+
+export const RISK_COLOR: Record<number, string> = {
+  1: 'text-teal-700', 2: 'text-teal-700', 3: 'text-amber-700',
+  4: 'text-amber-700', 5: 'text-red-700', 6: 'text-red-700', 7: 'text-red-700',
 };
 
 export const FUNDS: Fund[] = [

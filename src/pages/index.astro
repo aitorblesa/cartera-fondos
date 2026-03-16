@@ -1,24 +1,21 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navigation from '../components/Navigation';
-import Hero from '../components/Hero';
-import FundTypes from '../components/FundTypes';
-import Calculator from '../components/Calculator';
-import FundsGrid from '../components/FundsGrid';
+import Navigation   from '../components/Navigation';
+import Hero         from '../components/Hero';
+import FundTypes    from '../components/FundTypes';
+import Calculator   from '../components/Calculator';
+import FundsGrid    from '../components/FundsGrid';
 import WhyDiversify from '../components/WhyDiversify';
-import Footer from '../components/Footer';
+import Footer       from '../components/Footer';
 ---
 
 <BaseLayout>
-  <!-- Navigation uses IntersectionObserver, needs client:load -->
-  <Navigation client:load />
-
-  <!-- Hero is purely presentational — animations work with client:load -->
-  <div style="padding-top: 68px;">
-    <Hero client:load />
-    <FundTypes client:load />
-    <Calculator client:load />
-    <FundsGrid client:load />
+  <Navigation   client:load />
+  <div class="pt-[68px]">
+    <Hero         client:load />
+    <FundTypes    client:load />
+    <Calculator   client:load />
+    <FundsGrid    client:load />
     <WhyDiversify client:load />
     <Footer />
   </div>
