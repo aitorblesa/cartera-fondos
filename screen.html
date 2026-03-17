@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Selección de fondos de inversión - Cartera Fondos</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Lucide Icons via CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-dark': '#0a192f',
+            'brand-navy': '#112240',
+            'brand-blue': '#3b82f6',
+            'brand-green': '#10b981',
+            'brand-yellow': '#f59e0b',
+            'brand-red': '#ef4444',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .hero-bg {
+      background-color: #050a14;
+      background-image: radial-gradient(circle at top right, #1e3a8a 0%, #050a14 60%);
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    }
+    input[type="range"] {
+      accent-color: #111827;
+    }
+  </style>
+</head>
+<body class="antialiased">
+<!-- BEGIN: Hero Section -->
+<header class="hero-bg text-white pt-16 pb-24 px-6 md:px-12 lg:px-24">
+<div class="max-w-6xl mx-auto">
+<div class="flex items-center gap-2 mb-8 text-xs font-semibold uppercase tracking-widest text-blue-400">
+<span class="w-2 h-2 bg-white rounded-full"></span>
+      GUÍA DE INVERSIÓN FAMILIAR
+    </div>
+<h1 class="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+      Selección de <br/>
+<span class="text-blue-400">fondos de inversión</span>
+</h1>
+<p class="text-blue-100 text-lg md:text-xl max-w-2xl mb-12 opacity-80">
+      Entiende primero cómo funciona cada tipo de fondo, luego calcula tu cartera ideal y explora los 15 fondos seleccionados para la familia.
+    </p>
+<div class="flex flex-wrap gap-16 border-t border-white/10 pt-12">
+<div>
+<span class="block text-4xl font-bold">15</span>
+<span class="text-blue-300 text-sm">fondos seleccionados</span>
+</div>
+<div>
+<span class="block text-4xl font-bold">4</span>
+<span class="text-blue-300 text-sm">categorías</span>
+</div>
+<div>
+<span class="block text-4xl font-bold">€204k</span>
+<span class="text-blue-300 text-sm">capital de ejemplo</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-4 mt-12">
+<span class="px-4 py-2 bg-blue-900/40 rounded-full border border-blue-700/50 text-xs font-bold text-blue-200"><span class="text-white mr-1">1</span> Monetario</span>
+<span class="px-4 py-2 bg-green-900/40 rounded-full border border-green-700/50 text-xs font-bold text-green-200"><span class="text-white mr-1">7</span> Renta Fija</span>
+<span class="px-4 py-2 bg-yellow-900/40 rounded-full border border-yellow-700/50 text-xs font-bold text-yellow-200"><span class="text-white mr-1">3</span> Mixtos/Alt.</span>
+<span class="px-4 py-2 bg-red-900/40 rounded-full border border-red-700/50 text-xs font-bold text-red-200"><span class="text-white mr-1">4</span> Renta Variable</span>
+</div>
+</div>
+</header>
+<!-- END: Hero Section -->
+<!-- BEGIN: Fund Types Section -->
+<section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
+<div class="max-w-6xl mx-auto">
+<div class="mb-16">
+<p class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">PASO 1 — ENTIENDE LOS TIPOS</p>
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900">¿Qué tipo de fondo <span class="text-blue-600">es cada uno?</span></h2>
+<p class="mt-4 text-slate-500 max-w-2xl leading-relaxed">
+        Antes de ver los fondos concretos, es importante entender a qué categoría pertenece cada uno y qué papel juega en una cartera diversificada.
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+<!-- Card: Monetario -->
+<div class="p-8 rounded-3xl border border-slate-100 bg-white hover:border-blue-200 transition-colors custom-shadow">
+<div class="w-12 h-12 bg-blue-50 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-blue-600" data-lucide="wallet"></i>
+</div>
+<h3 class="text-xl font-bold mb-1">Monetario</h3>
+<p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-6">LIQUIDEZ TOTAL</p>
+<p class="text-sm text-slate-600 mb-8 leading-relaxed">Invierte en deuda a muy corto plazo. Letras del Tesoro, pagarés y depósitos con vencimiento inferior a 6 meses. Es el equivalente a una cuenta corriente que genera rentabilidad.</p>
+<div class="pt-6 border-t border-slate-100">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-400 font-bold uppercase">Riesgo muy bajo</p>
+<div class="flex gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-blue-600"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-blue-600">~2-4%</span>
+<span class="text-xs text-slate-400 block font-medium">s/año</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card: Renta Fija -->
+<div class="p-8 rounded-3xl border border-slate-100 bg-white hover:border-green-200 transition-colors custom-shadow">
+<div class="w-12 h-12 bg-green-50 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-green-600" data-lucide="layers"></i>
+</div>
+<h3 class="text-xl font-bold mb-1">Renta Fija</h3>
+<p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-6">BONOS Y CUPONES</p>
+<p class="text-sm text-slate-600 mb-8 leading-relaxed">Invierte en bonos (préstamos a empresas o gobiernos que pagan un interés fijo llamado 'cupón'). Cuanto más largo el vencimiento y más arriesgado el emisor, mayor rentabilidad potencial.</p>
+<div class="pt-6 border-t border-slate-100">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-400 font-bold uppercase">Riesgo bajo-moderado</p>
+<div class="flex gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-green-600"></div>
+<div class="w-2 h-2 rounded-full bg-green-600"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-green-600">~3-6%</span>
+<span class="text-xs text-slate-400 block font-medium">s/año</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card: Mixtos -->
+<div class="p-8 rounded-3xl border border-slate-100 bg-white hover:border-yellow-200 transition-colors custom-shadow">
+<div class="w-12 h-12 bg-yellow-50 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-yellow-600" data-lucide="scale"></i>
+</div>
+<h3 class="text-xl font-bold mb-1">Mixtos y Alt.</h3>
+<p class="text-[10px] font-bold text-yellow-500 uppercase tracking-widest mb-6">ADAPTABILIDAD</p>
+<p class="text-sm text-slate-600 mb-8 leading-relaxed">Combinan distintos activos (bonos + acciones + derivados) con libertad total. Las alternativas pueden usar estrategias sofisticadas como posiciones cortas o arbitraje.</p>
+<div class="pt-6 border-t border-slate-100">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-400 font-bold uppercase">Riesgo moderado</p>
+<div class="flex gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-yellow-600"></div>
+<div class="w-2 h-2 rounded-full bg-yellow-600"></div>
+<div class="w-2 h-2 rounded-full bg-yellow-600"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-yellow-600">~3-8%</span>
+<span class="text-xs text-slate-400 block font-medium">s/año</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card: Renta Variable -->
+<div class="p-8 rounded-3xl border border-slate-100 bg-white hover:border-red-200 transition-colors custom-shadow">
+<div class="w-12 h-12 bg-red-50 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-red-600" data-lucide="trending-up"></i>
+</div>
+<h3 class="text-xl font-bold mb-1">Renta Variable</h3>
+<p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-6">ACCIONES / BOLSA</p>
+<p class="text-sm text-slate-600 mb-8 leading-relaxed">Invierte en acciones de empresas. El valor sube y baja con el mercado. A corto plazo puede caer un 20-40%, pero a largo plazo (10+ años) es el activo más rentable históricamente.</p>
+<div class="pt-6 border-t border-slate-100">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-400 font-bold uppercase">Riesgo alto</p>
+<div class="flex gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-red-600"></div>
+<div class="w-2 h-2 rounded-full bg-red-600"></div>
+<div class="w-2 h-2 rounded-full bg-red-600"></div>
+<div class="w-2 h-2 rounded-full bg-red-600"></div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-lg font-bold text-red-600">~7-12%</span>
+<span class="text-xs text-slate-400 block font-medium">largo plazo</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Moved Table Section (Liquidity Traffic Light) -->
+</div>
+</section>
+<!-- END: Fund Types Section -->
+<!-- BEGIN: Portfolio Designer -->
+<section class="py-24 px-6 md:px-12 lg:px-24 bg-slate-50 border-y border-slate-200">
+<div class="max-w-6xl mx-auto">
+<div class="mb-12">
+<p class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">PASO 2 — CALCULA TU CARTERA</p>
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900">Diseña tu <span class="text-blue-600">cartera ideal</span></h2>
+<p class="mt-4 text-slate-500 max-w-2xl leading-relaxed">
+        Introduce tu capital, ajusta los pesos de cada categoría y activa el DCA si quieres aportar mensualmente.
+      </p>
+</div>
+<!-- Top Input Panel -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow">
+<label class="block text-[10px] font-bold text-slate-400 uppercase mb-4">CAPITAL INICIAL</label>
+<div class="flex items-center gap-3">
+<span class="text-slate-400 text-xl">€</span>
+<input class="w-full text-2xl font-bold border-none p-0 focus:ring-0" type="number" value="204000"/>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow">
+<div class="flex justify-between items-center mb-4">
+<label class="block text-[10px] font-bold text-slate-400 uppercase">APORTACIÓN DCA</label>
+<label class="flex items-center gap-2 text-[10px] text-slate-400 font-bold">
+<input checked="" class="rounded text-blue-600 border-slate-300 focus:ring-blue-500" type="checkbox"/>
+            Activar
+          </label>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-slate-400 text-xl">€</span>
+<input class="w-full text-2xl font-bold border-none p-0 focus:ring-0" type="number" value="500"/>
+</div>
+<p class="mt-2 text-[10px] text-slate-400">Mensual (Dollar Cost Averaging)</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow">
+<div class="flex justify-between items-center mb-4">
+<label class="block text-[10px] font-bold text-slate-400 uppercase">PLAZO</label>
+<span class="text-2xl font-bold">20 años</span>
+</div>
+<input class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer" max="40" min="1" type="range" value="20"/>
+<div class="flex justify-between mt-2 text-[9px] text-slate-400 font-bold uppercase tracking-tighter">
+<span>1 año</span>
+<span>40 años</span>
+</div>
+</div>
+<div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 custom-shadow relative group">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-2">
+<label class="block text-[10px] font-bold text-blue-500 uppercase">INFLACIÓN ESPERADA</label>
+<div class="relative inline-block cursor-help">
+<i class="w-3 h-3 text-blue-400" data-lucide="info"></i>
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-[10px] text-white rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                Muestra cuánto valdrá tu dinero en el futuro con el poder adquisitivo de hoy.
+              </div>
+</div>
+</div>
+<span class="text-2xl font-bold text-blue-600">2.5%</span>
+</div>
+<input class="w-full h-1.5 bg-blue-200 rounded-lg appearance-none cursor-pointer" max="10" min="0" step="0.1" type="range" value="2.5"/>
+<div class="flex justify-between mt-2 text-[9px] text-blue-400 font-bold uppercase tracking-tighter">
+<span>0%</span>
+<span>10%</span>
+</div>
+</div>
+</div>
+<!-- Growth Chart Section -->
+<div class="bg-white p-8 rounded-2xl border border-slate-200 custom-shadow mb-8">
+<label class="block text-[10px] font-bold text-slate-400 uppercase mb-8">PROYECCIÓN DE CRECIMIENTO: NOMINAL VS REAL (INFLACIÓN)</label>
+<div class="h-80 flex flex-col justify-end">
+<div class="relative w-full h-full border-l border-b border-slate-100">
+<!-- Inflation Area (Real) -->
+<div class="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-blue-500/20 to-transparent" style="clip-path: polygon(0 100%, 0 85%, 25% 78%, 50% 65%, 75% 55%, 100% 40%, 100% 100%);"></div>
+<!-- Nominal Line -->
+<svg class="absolute bottom-0 left-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 0 80 Q 25 70, 50 50 T 100 10" fill="none" stroke="#3b82f6" stroke-width="2.5"></path>
+<!-- Real line (dotted or distinct) -->
+<path d="M 0 85 Q 25 78, 50 65 T 100 40" fill="none" stroke="#10b981" stroke-dasharray="4" stroke-width="2"></path>
+</svg>
+<!-- Simple axis markers -->
+<div class="absolute bottom-0 left-0 w-full flex justify-between pt-2 text-[9px] text-slate-400 font-bold">
+<span>HOY</span>
+<span>5 AÑOS</span>
+<span>10 AÑOS</span>
+<span>15 AÑOS</span>
+<span>20 AÑOS</span>
+</div>
+</div>
+</div>
+<div class="mt-12 flex flex-wrap gap-6 text-[11px] font-bold text-slate-500 uppercase">
+<div class="flex items-center gap-2">
+<span class="w-3 h-0.5 bg-blue-500"></span> Valor Nominal (Futuro)
+        </div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-0.5 bg-green-500 border-t border-dashed"></span> Valor Real (Ajustado Inflación)
+        </div>
+</div>
+</div>
+<!-- Summary Highlight Cards: Updated layout with Aportado cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+<div class="bg-white p-4 rounded-xl border border-slate-200 custom-shadow">
+<p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Rent. Anual DCA</p>
+<p class="text-base font-bold text-slate-900">12.682,80 €</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200 custom-shadow">
+<p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Cap. Aportado DCA</p>
+<p class="text-base font-bold text-slate-900">324.000,00 €</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200 custom-shadow">
+<p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Cap. Aportado s/DCA</p>
+<p class="text-base font-bold text-slate-900">204.000,00 €</p>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200 custom-shadow">
+<p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Rent. Anual s/DCA</p>
+<p class="text-base font-bold text-slate-900">12.382,80 €</p>
+</div>
+<div class="bg-blue-600 p-4 rounded-xl custom-shadow text-white relative overflow-hidden lg:col-span-1">
+<div class="relative z-10">
+<p class="text-[9px] font-bold text-blue-100 uppercase mb-1">Patr. 20A DCA</p>
+<div class="flex flex-col">
+<span class="text-base font-bold leading-tight">€812k <span class="text-[8px] font-normal opacity-80 uppercase">Nom</span></span>
+<span class="text-xs font-semibold text-blue-200 leading-tight">€495k <span class="text-[8px] font-normal opacity-80 uppercase">Real</span></span>
+</div>
+</div>
+</div>
+<div class="bg-white p-4 rounded-xl border border-slate-200 custom-shadow lg:col-span-1">
+<p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Patr. 20A s/DCA</p>
+<div class="flex flex-col">
+<span class="text-base font-bold text-slate-900 leading-tight">€663k <span class="text-[8px] font-normal text-slate-400 uppercase">Nom</span></span>
+<span class="text-xs font-semibold text-slate-500 leading-tight">€404k <span class="text-[8px] font-normal text-slate-400 uppercase">Real</span></span>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden custom-shadow">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-200">
+<th class="px-6 py-4">CATEGORÍA</th>
+<th class="px-6 py-4 text-center">RETORNO ESP.</th>
+<th class="px-6 py-4 text-center">PESO %</th>
+<th class="px-6 py-4 text-center">CONTRIBUCIÓN</th>
+<th class="px-6 py-4 text-right">CAPITAL</th>
+<th class="px-6 py-4 text-right">RENTAB. €</th>
+</tr>
+</thead>
+<tbody class="text-sm font-medium">
+<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+<td class="px-6 py-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-blue-600"></span> Monetarios
+            </td>
+<td class="px-6 py-4 text-center text-blue-600">2.1 %</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<input class="w-24 h-1" type="range" value="15"/>
+<span class="w-8 text-right">15 %</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-green-600 font-bold">0.32%</td>
+<td class="px-6 py-4 text-right">30.600,00 €</td>
+<td class="px-6 py-4 text-right text-blue-600 font-bold">642,60 €</td>
+</tr>
+<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+<td class="px-6 py-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-400"></span> RF Corto plazo
+            </td>
+<td class="px-6 py-4 text-center text-blue-600">3.7 %</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<input class="w-24 h-1" type="range" value="15"/>
+<span class="w-8 text-right">15 %</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-green-600 font-bold">0.56%</td>
+<td class="px-6 py-4 text-right">30.600,00 €</td>
+<td class="px-6 py-4 text-right text-blue-600 font-bold">1132,20 €</td>
+</tr>
+<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+<td class="px-6 py-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-600"></span> RF Medio plazo
+            </td>
+<td class="px-6 py-4 text-center text-blue-600">5.5 %</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<input class="w-24 h-1" type="range" value="20"/>
+<span class="w-8 text-right">20 %</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-green-600 font-bold">1.10%</td>
+<td class="px-6 py-4 text-right">40.800,00 €</td>
+<td class="px-6 py-4 text-right text-blue-600 font-bold">2244,00 €</td>
+</tr>
+<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+<td class="px-6 py-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-red-600"></span> Renta Variable
+            </td>
+<td class="px-6 py-4 text-center text-blue-600">9 %</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<input class="w-24 h-1" type="range" value="40"/>
+<span class="w-8 text-right">40 %</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-green-600 font-bold">3.60%</td>
+<td class="px-6 py-4 text-right">81.600,00 €</td>
+<td class="px-6 py-4 text-right text-blue-600 font-bold">7344,00 €</td>
+</tr>
+<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+<td class="px-6 py-4 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-purple-600"></span> Alternativos
+            </td>
+<td class="px-6 py-4 text-center text-blue-600">5 %</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<input class="w-24 h-1" type="range" value="10"/>
+<span class="w-8 text-right">10 %</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center text-green-600 font-bold">0.50%</td>
+<td class="px-6 py-4 text-right">20.400,00 €</td>
+<td class="px-6 py-4 text-right text-blue-600 font-bold">1020,00 €</td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="bg-slate-50/50 text-slate-900 font-bold">
+<td class="px-6 py-6">TOTAL CARTERA</td>
+<td></td>
+<td class="px-6 py-6 text-center">100.00%</td>
+<td class="px-6 py-6 text-center text-green-600 text-lg">6.07%</td>
+<td class="px-6 py-6 text-right text-lg">204.000,00 €</td>
+<td class="px-6 py-6 text-right text-blue-600 text-lg">12.382,80 €</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<!-- Profile Footer -->
+<!-- Moved Table Section (Liquidity Traffic Light) -->
+<div class="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-200 custom-shadow">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">ANÁLISIS DE DISPONIBILIDAD</p>
+<h3 class="text-xl font-bold text-slate-900">Semáforo de liquidez de la cartera</h3>
+</div>
+<div class="text-right md:text-right">
+<span class="text-[10px] font-bold text-slate-400 uppercase">TOTAL DISPONIBLE &lt; 1 SEMANA:</span>
+<span class="ml-2 text-lg font-bold text-green-600">30%</span>
+</div>
+</div>
+<!-- Multi-segment Progress Bar -->
+<div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex mb-6">
+<div class="h-full bg-green-500 transition-all" style="width: 15%" title="&lt; 48h"></div>
+<div class="h-full bg-yellow-400 transition-all" style="width: 15%" title="&lt; 1 semana"></div>
+<div class="h-full bg-slate-300 transition-all" style="width: 70%" title="&gt; 1 semana / Largo plazo"></div>
+</div>
+<!-- Legend -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-green-500 mt-1"></div>
+<div>
+<p class="text-[10px] font-bold text-slate-900 uppercase">Inmediata (&lt; 48h)</p>
+<p class="text-xs text-slate-500">15% — Fondos Monetarios</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-yellow-400 mt-1"></div>
+<div>
+<p class="text-[10px] font-bold text-slate-900 uppercase">Rápida (&lt; 1 semana)</p>
+<p class="text-xs text-slate-500">15% — RF Corto Plazo</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-3 h-3 rounded-full bg-slate-300 mt-1"></div>
+<div>
+<p class="text-[10px] font-bold text-slate-900 uppercase">Largo Plazo (5+ años)</p>
+<p class="text-xs text-slate-500">70% — RF Medio, RV y Alt.</p>
+</div>
+</div>
+</div>
+</div><div class="mt-8 bg-white p-6 rounded-2xl border border-red-100 bg-gradient-to-br from-red-50/50 to-white flex flex-col md:flex-row justify-between items-center gap-6 custom-shadow">
+<div>
+<p class="text-[10px] font-bold text-red-400 uppercase tracking-widest mb-1">TU PERFIL DE INVERSOR</p>
+<h3 class="text-2xl font-bold text-slate-900">Perfil Moderado-Agresivo</h3>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-1 bg-red-100 text-[10px] font-bold text-red-600 rounded">RV dominante</span>
+<span class="px-2 py-1 bg-red-100 text-[10px] font-bold text-red-600 rounded">Alta rentabilidad</span>
+<span class="px-2 py-1 bg-red-100 text-[10px] font-bold text-red-600 rounded">Horizonte 7-15A</span>
+</div>
+</div>
+<div class="text-center md:text-right">
+<span class="block text-4xl font-bold text-slate-900 leading-none">6.07%</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase">RETORNO ESP. NOMINAL</span>
+</div>
+</div>
+<div class="mt-12 p-4 bg-yellow-50 border border-yellow-100 rounded-xl text-xs text-yellow-800">
+<span class="font-bold">Aviso:</span> Los retornos son estimaciones históricas. Las rentabilidades pasadas no garantizan rentabilidades futuras. El ajuste de inflación es una estimación basada en el IPC esperado.
+    </div>
+</div>
+</section>
+<!-- END: Portfolio Designer -->
+<!-- BEGIN: Fund List Section -->
+<section class="py-24 px-6 md:px-12 lg:px-24 bg-white">
+<div class="max-w-6xl mx-auto">
+<div class="mb-12">
+<p class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">PASO 3 — LOS FONDOS ELEGIDOS</p>
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900">Los 15 fondos <span class="text-blue-600">de un vistazo</span></h2>
+<p class="mt-4 text-slate-500 max-w-2xl leading-relaxed">
+        Haz clic en cada tarjeta para ver el análisis completo. Usa los filtros para explorar por categoría.
+      </p>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap gap-3 mb-12">
+<button class="px-5 py-2 bg-slate-900 text-white rounded-full text-xs font-bold">Todos (15)</button>
+<button class="px-5 py-2 bg-slate-100 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-200 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span> Monetario
+      </button>
+<button class="px-5 py-2 bg-slate-100 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-200 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span> Renta Fija
+      </button>
+<button class="px-5 py-2 bg-slate-100 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-200 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-yellow-500"></span> Mixtos
+      </button>
+<button class="px-5 py-2 bg-slate-100 text-slate-600 rounded-full text-xs font-bold hover:bg-slate-200 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-red-500"></span> Renta Variable
+      </button>
+</div>
+<!-- Fund Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Fund Card 1 -->
+<div class="bg-white border border-slate-200 rounded-3xl overflow-hidden custom-shadow group cursor-pointer hover:border-blue-400 transition-all">
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="px-3 py-1 bg-blue-50 text-[10px] font-bold text-blue-600 rounded uppercase">MONETARIO</span>
+<span class="text-slate-300 text-[10px]">#01</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 mb-1">Groupama Trésorerie</h4>
+<p class="text-xs text-slate-400 mb-6">Groupama Asset Management</p>
+<div class="flex items-center justify-between mb-6">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+</div>
+<span class="text-[10px] font-bold text-blue-500 uppercase">1/7 — Muy bajo</span>
+</div>
+<p class="text-xl font-bold text-slate-900 mb-6">~2-4% anual</p>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Liquidez</p>
+<p class="text-[10px] font-bold">24-48 h</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Rent. 2023</p>
+<p class="text-[10px] font-bold text-green-600">+3,56%</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Volatilidad</p>
+<p class="text-[10px] font-bold">0,1%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Fund Card 2 -->
+<div class="bg-white border border-slate-200 rounded-3xl overflow-hidden custom-shadow group cursor-pointer hover:border-green-400 transition-all">
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="px-3 py-1 bg-green-50 text-[10px] font-bold text-green-600 rounded uppercase">RENTA FIJA</span>
+<span class="text-slate-300 text-[10px]">#02</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 mb-1">NB Short Duration Euro Bond</h4>
+<p class="text-xs text-slate-400 mb-6">Neuberger Berman</p>
+<div class="flex items-center justify-between mb-6">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+</div>
+<span class="text-[10px] font-bold text-green-500 uppercase">2/7 — Bajo</span>
+</div>
+<p class="text-xl font-bold text-slate-900 mb-6">~3-5% anual</p>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Duración</p>
+<p class="text-[10px] font-bold">1-2 años</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Calidad</p>
+<p class="text-[10px] font-bold">IG (BBB+)</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Títulos</p>
+<p class="text-[10px] font-bold">170+ posic.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Fund Card 3 -->
+<div class="bg-white border border-slate-200 rounded-3xl overflow-hidden custom-shadow group cursor-pointer hover:border-green-400 transition-all">
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="px-3 py-1 bg-green-50 text-[10px] font-bold text-green-600 rounded uppercase">RENTA FIJA</span>
+<span class="text-slate-300 text-[10px]">#03</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 mb-1">Evli Nordic Corporate Bond</h4>
+<p class="text-xs text-slate-400 mb-6">Evli Fund Management</p>
+<div class="flex items-center justify-between mb-6">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+</div>
+<span class="text-[10px] font-bold text-green-500 uppercase">2/7 — Bajo</span>
+</div>
+<p class="text-xl font-bold text-slate-900 mb-6">Euribor + 3%</p>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Yield mkt</p>
+<p class="text-[10px] font-bold">6,10%</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Morningstar</p>
+<div class="flex text-[8px] text-yellow-400">★★★★★</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Patrimonio</p>
+<p class="text-[10px] font-bold">+2.000 M€</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Fund Card 4 -->
+<div class="bg-white border border-slate-200 rounded-3xl overflow-hidden custom-shadow group cursor-pointer hover:border-green-400 transition-all">
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="px-3 py-1 bg-green-50 text-[10px] font-bold text-green-600 rounded uppercase">RENTA FIJA</span>
+<span class="text-slate-300 text-[10px]">#04</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 mb-1">B&amp;H Deuda FI</h4>
+<p class="text-xs text-slate-400 mb-6">Buy &amp; Hold Capital</p>
+<div class="flex items-center justify-between mb-6">
+<div class="flex gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+</div>
+<span class="text-[10px] font-bold text-green-500 uppercase">2/7 — Bajo</span>
+</div>
+<p class="text-xl font-bold text-slate-900 mb-6">~4-6% anual</p>
+<div class="grid grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">TER</p>
+<p class="text-[10px] font-bold">Solo 0,35%</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Filosofía</p>
+<p class="text-[10px] font-bold">Buy &amp; Hold</p>
+</div>
+<div>
+<p class="text-[8px] font-bold text-slate-400 uppercase">Patrimonio</p>
+<p class="text-[10px] font-bold">+120 M€</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Additional Row Placeholder -->
+<div class="bg-white border border-slate-200 rounded-3xl p-6 custom-shadow opacity-60 flex items-center justify-center text-center">
+<p class="text-sm italic text-slate-400">Y 11 fondos más analizados detalladamente en la guía completa.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Fund List Section -->
+<!-- BEGIN: Why Section -->
+<section class="py-24 px-6 md:px-12 lg:px-24 hero-bg text-white">
+<div class="max-w-6xl mx-auto">
+<div class="mb-16">
+<p class="text-blue-400 font-bold text-xs uppercase tracking-widest mb-2">DIVERSIFICACIÓN</p>
+<h2 class="text-3xl md:text-5xl font-bold mb-6">¿Por qué 15 fondos distintos?</h2>
+<p class="text-blue-100/70 max-w-2xl leading-relaxed">
+        No pongas todos los huevos en la misma cesta. Cuando la bolsa cae, los bonos aguantan. Cuando los tipos suben, los alternativos protegen.
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="p-8 rounded-3xl bg-white/5 border border-white/10">
+<div class="w-12 h-12 bg-blue-500/20 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-blue-400" data-lucide="shield-check"></i>
+</div>
+<h3 class="text-xl font-bold mb-4">Protección</h3>
+<p class="text-sm text-blue-100/60 leading-relaxed">El monetario y la renta fija forman la base. Capital seguro, cupones predecibles y liquidez en cualquier momento.</p>
+</div>
+<div class="p-8 rounded-3xl bg-white/5 border border-white/10">
+<div class="w-12 h-12 bg-yellow-500/20 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-yellow-400" data-lucide="git-branch"></i>
+</div>
+<h3 class="text-xl font-bold mb-4">Equilibrio</h3>
+<p class="text-sm text-blue-100/60 leading-relaxed">Los fondos mixtos y alternativos se adaptan a cualquier entorno. Pueden ganar incluso cuando la bolsa y los bonos caen a la vez.</p>
+</div>
+<div class="p-8 rounded-3xl bg-white/5 border border-white/10">
+<div class="w-12 h-12 bg-red-500/20 flex items-center justify-center rounded-2xl mb-6">
+<i class="text-red-400" data-lucide="rocket"></i>
+</div>
+<h3 class="text-xl font-bold mb-4">Crecimiento</h3>
+<p class="text-sm text-blue-100/60 leading-relaxed">La renta variable es el motor a largo plazo. Mayor volatilidad a corto, pero mayor rentabilidad en horizontes de 5+ años.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Why Section -->
+<!-- BEGIN: Alternativos Section -->
+<section class="py-24 px-6 md:px-12 lg:px-24 bg-slate-900 text-white">
+<div class="max-w-6xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16">
+<div>
+<p class="text-blue-400 font-bold text-xs uppercase tracking-widest mb-2">FONDOS ALTERNATIVOS</p>
+<div class="flex items-center gap-2">
+<h2 class="text-2xl font-bold">Fondos <span class="text-slate-400">Familia</span></h2>
+</div>
+</div>
+<div class="flex flex-wrap gap-6 text-xs font-bold text-slate-400 uppercase">
+<a class="hover:text-white transition-colors" href="#">Tipos de fondos</a>
+<a class="hover:text-white transition-colors" href="#">Calculadora</a>
+<a class="hover:text-white transition-colors" href="#">Los fondos</a>
+<a class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors" href="#">Por qué diversificar</a>
+</div>
+</div>
+<p class="text-lg text-slate-400 max-w-4xl mb-12 leading-relaxed">
+      Son fondos que usan herramientas más sofisticadas que comprar acciones o bonos. Pueden apostar a que algo <span class="text-white font-bold">baje</span> (posiciones cortas), usar derivados de cobertura y acceder a instrumentos especiales. <span class="text-white font-bold">La complejidad la gestiona el equipo profesional, no tú.</span>
+</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-white p-8 rounded-3xl text-slate-900">
+<h4 class="text-xl font-bold mb-1">Dunas Valor Equilibrado</h4>
+<p class="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-6">INSTRUMENTO: COCOS BANCARIOS</p>
+<p class="text-sm text-slate-600 leading-relaxed">Los CoCos son bonos emitidos por bancos con cupones muy altos. En condiciones normales pagan ese cupón. Solo se convierten en acciones si el banco tiene una crisis grave. A pesar de usar estos instrumentos sofisticados, su riesgo oficial es <span class="font-bold">2/7 (bajo)</span> gracias a una gestión muy rigurosa del riesgo.</p>
+</div>
+<div class="bg-white p-8 rounded-3xl text-slate-900">
+<h4 class="text-xl font-bold mb-1">DNCA Alpha Bonds</h4>
+<p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-6">ESTRATEGIA: POSICIONES CORTAS EN TIPOS</p>
+<p class="text-sm text-slate-600 leading-relaxed">Este fondo puede apostar a que los tipos de interés van a <span class="font-bold">subir</span> y ganar dinero cuando lo hacen. En 2022, cuando el BCE subió tipos agresivamente y toda la renta fija tradicional perdía un 10-15%, DNCA Alpha Bonds ganó <span class="font-bold text-blue-600">+5,99%</span> porque había anticipado esas subidas.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Alternativos Section -->
+<!-- BEGIN: Footer -->
+<footer class="py-24 px-6 md:px-12 lg:px-24 bg-brand-dark text-slate-500 text-center border-t border-white/5">
+<div class="max-w-6xl mx-auto">
+<div class="flex items-center justify-center gap-2 mb-8 text-white">
+<span class="text-xl font-bold">Fondos <span class="text-slate-400">Familia</span></span>
+</div>
+<p class="text-xs max-w-3xl mx-auto mb-12 leading-relaxed opacity-60">
+      Las rentabilidades pasadas no garantizan rentabilidades futuras. Este documento es meramente informativo y no constituye asesoramiento de inversión. Antes de invertir consulte el folleto y el documento de datos fundamentales (DFI) de cada fondo.
+    </p>
+<a class="inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-2xl transition-all transform hover:scale-105" href="https://artemisafunds.com" target="_blank">
+<span class="text-xs uppercase tracking-widest">FONDOS SELECCIONADOS A TRAVÉS DE</span>
+<span class="text-lg">artemisafunds.com</span>
+<i class="w-5 h-5" data-lucide="arrow-right"></i>
+</a>
+</div>
+</footer>
+<!-- END: Footer -->
+<script data-purpose="lucide-setup">
+  // Initialize Lucide icons
+  lucide.createIcons();
+</script>
+</body></html>
