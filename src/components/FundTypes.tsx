@@ -46,7 +46,7 @@ export default function FundTypes() {
 
   return (
     <section id="tipos" className="bg-white px-14 py-20">
-      <div className="max-w-6xl mx-auto" ref={ref}>
+      <div className="max-w-7xl mx-auto" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}

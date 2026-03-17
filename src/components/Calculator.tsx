@@ -471,7 +471,7 @@ export default function Calculator() {
       id="calculadora"
       className="bg-slate-50 px-6 md:px-14 py-20 border-t border-slate-200"
     >
-      <div className="max-w-6xl mx-auto" ref={ref}>
+      <div className="max-w-7xl mx-auto" ref={ref}>
         {/* ── Section header ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
