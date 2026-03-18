@@ -66,7 +66,7 @@ export default function FundTypes() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          {TYPES.map((t, i) => (
+          {TYPES.reverse().map((t, i) => (
             <motion.div
               key={t.title}
               initial={{ opacity: 0, y: 32 }}

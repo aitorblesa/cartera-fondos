@@ -8,10 +8,10 @@ type Filter = 'all' | FundType;
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: 'all',       label: 'Todos (15)' },
-  { id: 'monetario', label: '💶 Monetario' },
-  { id: 'rf',        label: '📊 Renta Fija' },
-  { id: 'mixto',     label: '⚖️ Mixtos' },
   { id: 'rv',        label: '📈 Renta Variable' },
+  { id: 'mixto',     label: '⚖️ Mixtos' },
+  { id: 'rf',        label: '📊 Renta Fija' },
+  { id: 'monetario', label: '💶 Monetario' },
 ];
 
 export default function FundsGrid() {
@@ -30,7 +30,7 @@ export default function FundsGrid() {
         >
           <p className="text-xs font-bold tracking-[0.09em] uppercase text-blue-600 mb-2.5">PASO 3 — LOS FONDOS ELEGIDOS</p>
           <h2 className="font-serif text-[clamp(28px,3.5vw,44px)] text-navy leading-tight mb-2.5">
-            Los 15 fondos <em className="not-italic text-blue-600">de un vistazo</em>
+            Fondos seleccionados <em className="not-italic text-blue-600">de un vistazo</em>
           </h2>
           <p className="text-lg text-slate-500 mb-8 max-w-3xl leading-relaxed">
             Haz clic en cada tarjeta para ver el análisis completo. Usa los filtros para explorar por categoría.

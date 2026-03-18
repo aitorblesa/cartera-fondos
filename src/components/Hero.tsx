@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section className="relative bg-[#0B1629] px-14 pt-28 pb-20 overflow-hidden min-h-screen">
       {/* Accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-blue-400 to-violet-600" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-blue-600 via-blue-400 to-violet-600" />
 
       {/* Grid bg */}
       <div
@@ -23,7 +23,7 @@ export default function Hero() {
       />
 
       {/* Glow orb */}
-      <div className="absolute right-[8%] top-1/4 w-[560px] h-[560px] rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
+      <div className="absolute right-[8%] top-1/4 w-140 size-140 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto">
         <motion.div
@@ -55,9 +55,8 @@ export default function Hero() {
           className="flex gap-14 flex-wrap border-t border-white/10 pt-10"
         >
           {[
-            { num: "15", label: "fondos seleccionados" },
-            { num: "4", label: "categorías" },
-            { num: "€204k", label: "capital de ejemplo" },
+            { num: "€30k", label: "Capital de ejemplo" },
+            { num: "4", label: "Categorías" },
           ].map((s) => (
             <div key={s.num}>
               <div className="font-serif text-[52px] text-white leading-none">
@@ -71,42 +70,39 @@ export default function Hero() {
         <motion.div {...fadeUp(0.5)} className="flex flex-wrap gap-3 mt-10">
           {[
             {
-              count: 1,
               label: "Monetario",
               bg: "bg-blue-900/40",
               border: "border-blue-700/50",
               text: "text-blue-200",
             },
             {
-              count: 7,
               label: "Renta Fija",
               bg: "bg-green-900/40",
               border: "border-green-700/50",
               text: "text-green-200",
             },
             {
-              count: 3,
-              label: "Mixtos/Alt.",
+              label: "Mixtos/Alternativos",
               bg: "bg-yellow-900/40",
               border: "border-yellow-700/50",
               text: "text-yellow-200",
             },
             {
-              count: 4,
               label: "Renta Variable",
               bg: "bg-red-900/40",
               border: "border-red-700/50",
               text: "text-red-200",
             },
-          ].map((c) => (
-            <span
-              key={c.label}
-              className={`px-4 py-2 ${c.bg} rounded-full border ${c.border} text-xs font-bold ${c.text}`}
-            >
-              <span className="text-white mr-1">{c.count}</span>
-              {c.label}
-            </span>
-          ))}
+          ]
+            .reverse()
+            .map((c) => (
+              <span
+                key={c.label}
+                className={`px-4 py-2 ${c.bg} rounded-full border ${c.border} text-xs font-bold ${c.text}`}
+              >
+                {c.label}
+              </span>
+            ))}
         </motion.div>
       </div>
     </section>

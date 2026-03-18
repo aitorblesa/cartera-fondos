@@ -44,7 +44,7 @@ export default function WhyDiversify() {
             DIVERSIFICACIÓN
           </p>
           <h2 className="font-serif text-[clamp(34px,3.5vw,52px)] text-white leading-tight mb-3">
-            ¿Por qué 15 fondos distintos?
+            ¿Por qué diversificar?
           </h2>
           <p className="text-lg text-slate-500 mb-11 max-w-2xl leading-relaxed">
             No pongas todos los huevos en la misma cesta. Cuando la bolsa cae,

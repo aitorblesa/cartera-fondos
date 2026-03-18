@@ -16,15 +16,22 @@ export default function Navigation() {
 
   useEffect(() => {
     const els = SECTIONS.map(s => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
+    const intersecting = new Map<string, DOMRectReadOnly>();
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter(e => e.isIntersecting);
-        if (!visible.length) return;
-        const topmost = visible.reduce((best, curr) =>
-          curr.boundingClientRect.top < best.boundingClientRect.top ? curr : best
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            intersecting.set(e.target.id, e.boundingClientRect);
+          } else {
+            intersecting.delete(e.target.id);
+          }
+        });
+        if (!intersecting.size) return;
+        const topmost = [...intersecting.entries()].reduce((best, curr) =>
+          curr[1].top < best[1].top ? curr : best
         );
-        setActiveSection(topmost.target.id);
+        setActiveSection(topmost[0]);
       },
       { rootMargin: '-10% 0px -60% 0px', threshold: [0, 0.1, 0.25] }
     );
@@ -43,7 +50,7 @@ export default function Navigation() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-14 h-[68px] transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-14 h-17 transition-all duration-300 ${
         scrolled
           ? 'bg-[#0B1629]/95 backdrop-blur-md border-b border-blue-900/30'
           : 'bg-[#0B1629] border-b border-[#1E3A6E]'
@@ -100,7 +107,7 @@ export default function Navigation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="absolute top-[68px] left-0 right-0 bg-[#0B1629]/98 border-b border-[#1E3A6E] p-4 flex flex-col gap-2"
+            className="absolute top-17 left-0 right-0 bg-[#0B1629]/98 border-b border-[#1E3A6E] p-4 flex flex-col gap-2"
           >
             {SECTIONS.map(sec => (
               <button

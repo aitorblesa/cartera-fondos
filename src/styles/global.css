@@ -1,48 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap");
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap');
 
 @theme {
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-serif: "DM Serif Display", Georgia, serif;
 
-  --color-navy: #1B2B5B;
-  --color-navy-2: #0F2044;
-  --color-navy-3: #0B1629;
+  --color-navy: #1b2b5b;
+  --color-navy-2: #0f2044;
+  --color-navy-3: #0b1629;
 
-  --color-brand-blue: #2563EB;
-  --color-brand-blue-l: #DBEAFE;
-  --color-brand-teal: #0D7A5F;
-  --color-brand-teal-l: #D1FAE5;
-  --color-brand-amber: #B45309;
-  --color-brand-amber-l: #FEF3C7;
-  --color-brand-red: #C53030;
-  --color-brand-red-l: #FEE2E2;
-  --color-brand-purple: #7C3AED;
-  --color-brand-purple-l: #F5F3FF;
+  --color-brand-blue: #2563eb;
+  --color-brand-blue-l: #dbeafe;
+  --color-brand-teal: #0d7a5f;
+  --color-brand-teal-l: #d1fae5;
+  --color-brand-amber: #b45309;
+  --color-brand-amber-l: #fef3c7;
+  --color-brand-red: #c53030;
+  --color-brand-red-l: #fee2e2;
+  --color-brand-purple: #7c3aed;
+  --color-brand-purple-l: #f5f3ff;
   --color-brand-green: #059669;
-  --color-brand-green-l: #ECFDF5;
+  --color-brand-green-l: #ecfdf5;
 
   --animate-fade-up: fadeUp 0.6s ease both;
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+  }
 
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: #0B1629; }
-  ::-webkit-scrollbar-thumb { background: #2563EB; border-radius: 3px; }
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b1629;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2563eb;
+    border-radius: 3px;
+  }
 
   /* Number input arrows hidden */
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type=number] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 
 @layer utilities {
-  .font-display { font-family: 'DM Serif Display', Georgia, serif; }
+  .font-display {
+    font-family: "DM Serif Display", Georgia, serif;
+  }
 }
