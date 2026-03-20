@@ -605,7 +605,7 @@ export default function Calculator() {
               </span>
               <a
                 target="_blank"
-                ref="noopener noreferrer"
+                rel="noopener noreferrer"
                 href="https://www.ine.es/"
                 className="text-xs text-blue-600 border-b-2 w-fit border-blue-100"
               >
