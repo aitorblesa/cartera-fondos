@@ -8,6 +8,7 @@ import {
   CrosshairMode,
 } from "lightweight-charts";
 import { CATS } from "../data";
+import { getIPCAnual } from "../api";
 
 /* ─── helpers ─── */
 const fmt = (n: number) =>
@@ -437,8 +438,18 @@ export default function Calculator() {
   const [years, setYears] = useState(20);
   const [dcaOn, setDcaOn] = useState(true);
   const [dcaAmt, setDcaAmt] = useState(500);
-  const [inflation, setInflation] = useState(2.5);
+  const [inflation, setInflation] = useState(2.3);
+  const [inflationLoaded, setInflationLoaded] = useState(false);
   const [showReal, setShowReal] = useState(false);
+
+  useEffect(() => {
+    getIPCAnual()
+      .then((val: number) => {
+        setInflation(parseFloat(val.toFixed(1)));
+        setInflationLoaded(true);
+      })
+      .catch(() => setInflationLoaded(true));
+  }, []);
   const [weights, setWeights] = useState<number[]>(() =>
     CATS.map((c) => c.peso),
   );
@@ -585,26 +596,20 @@ export default function Calculator() {
 
           {/* Inflación */}
           <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col justify-between h-full">
               <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest">
-                Inflación Esperada
+                Inflación Actual
               </label>
-              <span className="text-2xl font-bold text-blue-600">
-                {inflation.toFixed(1)}%
+              <span className="text-7xl font-bold  text-blue-600">
+                {inflationLoaded ? `${inflation.toFixed(1)}%` : "…"}
               </span>
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={10}
-              step={0.1}
-              value={inflation}
-              onChange={(e) => setInflation(+e.target.value)}
-              className="w-full h-1.5 accent-blue-600 rounded-lg cursor-pointer"
-            />
-            <div className="flex justify-between mt-2 text-xs text-blue-400 font-bold uppercase tracking-tighter">
-              <span>0%</span>
-              <span>10%</span>
+              <a
+                target="_blank"
+                href="https://www.ine.es/"
+                className="text-xs text-blue-600 border-b-2 w-fit border-blue-100"
+              >
+                Dato extraído del INE
+              </a>
             </div>
           </div>
         </div>
